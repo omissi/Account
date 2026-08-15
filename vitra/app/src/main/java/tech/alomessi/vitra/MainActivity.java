@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -18,8 +19,6 @@ import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -49,6 +48,7 @@ import tech.alomessi.vitra.widget.SearchWidgetProvider;
 import tech.alomessi.vitra.widget.SystemWidgetProvider;
 import tech.alomessi.vitra.widget.WeatherWidgetProvider;
 
+@SuppressLint("SetTextI18n")
 public class MainActivity extends Activity {
     private static final int BG=0xff07090f,SURFACE=0xff131826,SURFACE_2=0xff1b2133,TEXT=0xfff5f7ff,MUTED=0xff9daac2,CYAN=0xff30e7ff,VIOLET=0xff9d5cff;
     private SharedPreferences prefs;
@@ -69,7 +69,7 @@ public class MainActivity extends Activity {
         if(!prefs.getBoolean("onboarded",false))showOnboarding();else render("home");
     }
 
-    private void configureWindow(){Window w=getWindow();w.setStatusBarColor(BG);w.setNavigationBarColor(BG);if(android.os.Build.VERSION.SDK_INT>=30){WindowInsetsController c=w.getInsetsController();if(c!=null)c.setSystemBarsAppearance(0,WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS|WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);}}
+    @SuppressWarnings("deprecation") private void configureWindow(){Window w=getWindow();w.setStatusBarColor(BG);w.setNavigationBarColor(BG);}
 
     private void showOnboarding(){
         root=new FrameLayout(this);root.setBackground(background(BG,0xff10162a,0));root.setPadding(dp(28),dp(36),dp(28),dp(28));
@@ -159,7 +159,7 @@ public class MainActivity extends Activity {
     private GradientDrawable background(int start,int end,int corner){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{start,end});d.setCornerRadius(dp(corner));return d;}
     private GradientDrawable circle(int color,boolean selected){GradientDrawable d=new GradientDrawable();d.setShape(GradientDrawable.OVAL);d.setColor(color);d.setStroke(dp(selected?3:1),withAlpha(TEXT,selected?230:35));return d;}
     private int withAlpha(int color,int a){return Color.argb(Math.max(0,Math.min(255,a)),Color.red(color),Color.green(color),Color.blue(color));}
-    @SuppressWarnings("deprecation") private void applySystemInsets(View view){if(android.os.Build.VERSION.SDK_INT>=21){final int left=view.getPaddingLeft(),top=view.getPaddingTop(),right=view.getPaddingRight(),bottom=view.getPaddingBottom();view.setOnApplyWindowInsetsListener((v,insets)->{v.setPadding(left+insets.getSystemWindowInsetLeft(),top+insets.getSystemWindowInsetTop(),right+insets.getSystemWindowInsetRight(),bottom+insets.getSystemWindowInsetBottom());return insets;});view.requestApplyInsets();}}
+    @SuppressWarnings("deprecation") private void applySystemInsets(View view){final int left=view.getPaddingLeft(),top=view.getPaddingTop(),right=view.getPaddingRight(),bottom=view.getPaddingBottom();view.setOnApplyWindowInsetsListener((v,insets)->{v.setPadding(left+insets.getSystemWindowInsetLeft(),top+insets.getSystemWindowInsetTop(),right+insets.getSystemWindowInsetRight(),bottom+insets.getSystemWindowInsetBottom());return insets;});view.requestApplyInsets();}
     private LinearLayout.LayoutParams matchHeight(int h,int top,int bottom){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,h);p.setMargins(0,top,0,bottom);return p;}private LinearLayout.LayoutParams matchWrap(int top,int bottom){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.setMargins(0,top,0,bottom);return p;}private LinearLayout.LayoutParams wrapHeight(int h,int top,int end){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-2,h);p.setMargins(0,top,end,0);return p;}
     private int dp(float v){return Math.round(v*getResources().getDisplayMetrics().density);}private String ar(String a,String e){return arabic?a:e;}private void toast(String s){Toast.makeText(this,s,Toast.LENGTH_SHORT).show();}
     private String permissionLabel(){return selected.category.equals("Weather")||selected.category.equals("Prayer")?ar("الإنترنت فقط؛ الموقع اختياري","Internet only; location optional"):ar("لا توجد أذونات حساسة","No sensitive permissions");}
@@ -170,7 +170,7 @@ public class MainActivity extends Activity {
     private void showCityDialog(){String[] names=new String[DataRepository.CITIES.length];for(int i=0;i<names.length;i++)names[i]=DataRepository.CITIES[i][0];new AlertDialog.Builder(this).setTitle(ar("اختر المدينة","Choose city")).setItems(names,(dialog,which)->{String[] c=DataRepository.CITIES[which];prefs.edit().putString("city_name",c[0]).putLong("city_lat",Double.doubleToRawLongBits(Double.parseDouble(c[1]))).putLong("city_lon",Double.doubleToRawLongBits(Double.parseDouble(c[2]))).remove("weather_updated").remove("prayer_updated").apply();DataRepository.refresh(this,true);toast(ar("جارٍ تحديث الطقس والمواقيت","Refreshing weather and prayer times"));render("settings");}).setNegativeButton(ar("إلغاء","Cancel"),null).show();}
     private void openAppSettings(){try{Intent i=new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);i.setData(android.net.Uri.parse("package:"+getPackageName()));startActivity(i);}catch(Exception e){toast(ar("تعذر فتح الإعدادات","Unable to open settings"));}}private void openBatterySettings(){try{startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));}catch(Exception e){toast(ar("تعذر فتح الإعدادات","Unable to open settings"));}}
     private SeekBar.OnSeekBarChangeListener seek(IntValue r){return new SeekBar.OnSeekBarChangeListener(){public void onProgressChanged(SeekBar s,int p,boolean u){r.set(p);}public void onStartTrackingTouch(SeekBar s){}public void onStopTrackingTouch(SeekBar s){saveStyle();render("editor");}};}private interface IntValue{void set(int v);}
-    private void requestPin(){if(android.os.Build.VERSION.SDK_INT<26){toast(ar("أضف الويدجت من قائمة الشاشة الرئيسية","Add the widget from your launcher"));return;}AppWidgetManager m=AppWidgetManager.getInstance(this);if(!m.isRequestPinAppWidgetSupported()){toast(ar("المشغل لا يدعم الإضافة المباشرة","Launcher does not support direct pinning"));return;}ComponentName p=new ComponentName(this,providerFor(selected));Bundle extras=new Bundle();extras.putString("vitra_style",selected.id);PendingIntent ok=PendingIntent.getActivity(this,100,new Intent(this,MainActivity.class),PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);m.requestPinAppWidget(p,extras,ok);}
+    private void requestPin(){AppWidgetManager m=AppWidgetManager.getInstance(this);if(!m.isRequestPinAppWidgetSupported()){toast(ar("المشغل لا يدعم الإضافة المباشرة","Launcher does not support direct pinning"));return;}ComponentName p=new ComponentName(this,providerFor(selected));Bundle extras=new Bundle();extras.putString("vitra_style",selected.id);PendingIntent ok=PendingIntent.getActivity(this,100,new Intent(this,MainActivity.class),PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);m.requestPinAppWidget(p,extras,ok);}
     private Class<?> providerFor(WidgetData d){switch(d.category){case"Date":return DateWidgetProvider.class;case"Weather":return WeatherWidgetProvider.class;case"Prayer":return PrayerWidgetProvider.class;case"Search":case"Apps":return SearchWidgetProvider.class;case"System":case"Sports":return SystemWidgetProvider.class;default:return ClockWidgetProvider.class;}}
     @Override public void onBackPressed(){if(screen.equals("editor")){render("detail");return;}if(!screen.equals("home")){render("home");return;}super.onBackPressed();}
 }

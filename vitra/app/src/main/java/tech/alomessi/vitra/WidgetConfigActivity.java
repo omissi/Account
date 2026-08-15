@@ -2,6 +2,7 @@ package tech.alomessi.vitra;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+@SuppressLint("SetTextI18n")
 public class WidgetConfigActivity extends Activity {
     private int widgetId=AppWidgetManager.INVALID_APPWIDGET_ID;
     private int accent=0xff30e7ff;
@@ -39,6 +41,6 @@ public class WidgetConfigActivity extends Activity {
     private LinearLayout.LayoutParams match(int bottom){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.setMargins(0,0,0,bottom);return p;}
     private GradientDrawable circle(int color){GradientDrawable d=new GradientDrawable();d.setShape(GradientDrawable.OVAL);d.setColor(color);d.setStroke(dp(2),0x33ffffff);return d;}
     private GradientDrawable round(int color,int r){GradientDrawable d=new GradientDrawable();d.setColor(color);d.setCornerRadius(dp(r));return d;}
-    @SuppressWarnings("deprecation") private void applyInsets(View view){if(android.os.Build.VERSION.SDK_INT>=21){final int l=view.getPaddingLeft(),t=view.getPaddingTop(),r=view.getPaddingRight(),b=view.getPaddingBottom();view.setOnApplyWindowInsetsListener((v,i)->{v.setPadding(l+i.getSystemWindowInsetLeft(),t+i.getSystemWindowInsetTop(),r+i.getSystemWindowInsetRight(),b+i.getSystemWindowInsetBottom());return i;});view.requestApplyInsets();}}
+    @SuppressWarnings("deprecation") private void applyInsets(View view){final int l=view.getPaddingLeft(),t=view.getPaddingTop(),r=view.getPaddingRight(),b=view.getPaddingBottom();view.setOnApplyWindowInsetsListener((v,i)->{v.setPadding(l+i.getSystemWindowInsetLeft(),t+i.getSystemWindowInsetTop(),r+i.getSystemWindowInsetRight(),b+i.getSystemWindowInsetBottom());return i;});view.requestApplyInsets();}
     private int dp(int v){return Math.round(v*getResources().getDisplayMetrics().density);}
 }
