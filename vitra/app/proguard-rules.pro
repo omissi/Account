@@ -1,0 +1,1 @@
+-keep class tech.alomessi.vitra.widget.** { *; }
