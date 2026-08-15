@@ -44,6 +44,4 @@ public final class WidgetData {
         new WidgetData("quote-calm", "Quotes", "Calm Quote", "اقتباس هادئ", "Daily Arabic and English", "عربي وإنجليزي يوميًا", false, false, 10),
         new WidgetData("calendar-arc", "Date", "Calendar Arc", "قوس التقويم", "Month progress", "تقدم الشهر", false, true, 11)
     );
-
-    private WidgetData() {}
 }
