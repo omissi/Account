@@ -38,19 +38,18 @@ jobs:
           profile: pixel_6
           disable-animations: true
           script: |
-            if [ -d vitra/app ]; then APP_ROOT=vitra; else APP_ROOT=.; fi
-            adb install -r "$APP_ROOT/app/build/outputs/apk/debug/app-debug.apk"
+            adb install -r "$(find . -path '*/app/build/outputs/apk/debug/app-debug.apk' -print -quit)"
             adb logcat -c
             adb shell am force-stop tech.alomessi.vitra
             adb shell am start -W -n tech.alomessi.vitra/.MainActivity
             sleep 4
-            PID="$(adb shell pidof tech.alomessi.vitra | tr -d '\r')"
-            adb logcat -d > "$APP_ROOT/docs/runtime-logcat.txt"
-            adb exec-out screencap -p > "$APP_ROOT/docs/runtime-first-launch.png"
+            mkdir -p runtime-evidence
+            adb logcat -d > runtime-evidence/runtime-logcat.txt
+            adb exec-out screencap -p > runtime-evidence/runtime-first-launch.png
             adb shell uiautomator dump /sdcard/vitra-ui.xml || true
-            adb pull /sdcard/vitra-ui.xml "$APP_ROOT/docs/runtime-ui.xml" || true
-            test -n "$PID"
-            ! grep -q "FATAL EXCEPTION.*tech.alomessi.vitra" "$APP_ROOT/docs/runtime-logcat.txt"
+            adb pull /sdcard/vitra-ui.xml runtime-evidence/runtime-ui.xml || true
+            test -n "$(adb shell pidof tech.alomessi.vitra | tr -d '\r')"
+            ! grep -q "FATAL EXCEPTION.*tech.alomessi.vitra" runtime-evidence/runtime-logcat.txt
       - name: Upload runtime evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -63,4 +62,5 @@ jobs:
             docs/runtime-*.png
             docs/runtime-*.txt
             docs/runtime-*.xml
+            runtime-evidence/*
           if-no-files-found: warn
