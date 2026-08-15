@@ -2,33 +2,33 @@
 
 Vitra is an original Android widget studio by **ALOMESSI TECH**. It combines a curated widget catalog, live customization, wallpaper-aware styling, favorites, privacy-first settings, and six focused widget families instead of flooding the Android picker with dozens of near-duplicate entries.
 
-## Current prototype
+## Version 1.0
 
 - Arabic and English first-launch choice with RTL-ready copy.
 - Premium dark glass visual system and original Vitra identity.
-- Search surface, category filters, New/Pro labels, compatibility and size metadata.
+- Search, category filters, compatibility and size metadata.
 - 12 catalog designs covering clock, digital time, date, weather, prayer, search, system, apps, sports and quotes.
 - Detail screen with device preview, permissions, compatibility, favorite and direct pin actions.
 - Live customization studio: accent palettes, glass opacity, corner radius, auto-style, layer tools and save/add flow.
-- Wallpapers, favorites, privacy, permission and widget diagnostics screens.
+- Wallpapers, favorites, privacy, permission, city/data-source and widget diagnostics screens.
 - Six real Android widget providers: Clock, Date, Weather, Prayer, Search and System.
+- Live, cached weather from Open-Meteo and prayer times from Aladhan for nine selectable cities.
+- Per-widget accent configuration through the Android widget configuration flow.
 - No registration and no sensitive permission requested on first launch.
-
-Weather and prayer cards intentionally show an unconfigured state until a trusted data provider and regional calculation flow are connected. They never display fabricated live data.
 
 ## Build
 
-Requirements: JDK 17, Android SDK 35 and Gradle 8.10.2.
+Requirements: JDK 17, Android SDK 36 and Gradle 8.11.1.
 
 ```bash
 gradle :app:assembleDebug
 ```
 
-The APK is generated at `app/build/outputs/apk/debug/app-debug.apk`. GitHub Actions builds and uploads the same APK as `Vitra-debug-apk`.
+The debug APK is generated at `app/build/outputs/apk/debug/app-debug.apk`. The release workflow also builds an unsigned release APK and AAB, runs Android lint, and uploads all reports as GitHub Actions artifacts. A Play upload must be signed with the publisher's private upload key; keys are deliberately never stored in this repository.
 
 ## Package
 
-`tech.alomessi.vitra` · version `0.1.0` · minimum Android 8.0 (API 26)
+`tech.alomessi.vitra` · version `1.0.0` (10) · minimum Android 8.0 (API 26) · target Android 16 (API 36)
 
 ## Product principles
 
@@ -37,5 +37,9 @@ The APK is generated at `app/build/outputs/apk/debug/app-debug.apk`. GitHub Acti
 3. Just-in-time permissions and clear empty states.
 4. Arabic and English are equal product languages.
 5. No copied Glassify code, assets or branding.
+
+## Data sources
+
+Weather is powered by Open-Meteo and prayer times by Aladhan. Vitra sends the coordinates of the city selected from its built-in list; it does not request precise device location. See `docs/DATA_SOURCES.md` and `docs/PRIVACY_AR.md` before publishing. The free Open-Meteo API is intended for non-commercial use; a monetized release must use an appropriate paid/commercial plan or replace the provider.
 
 Copyright © ALOMESSI TECH. All rights reserved.

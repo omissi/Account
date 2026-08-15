@@ -17,12 +17,27 @@ jobs:
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.10.2'
-      - name: Build debug APK
-        run: gradle :app:assembleDebug --stacktrace
-      - name: Upload APK
+          gradle-version: '8.11.1'
+      - name: Lint and build installable artifacts
+        run: gradle :app:lintDebug :app:assembleDebug :app:assembleRelease :app:bundleRelease --stacktrace
+      - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
           name: Vitra-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Vitra-release-unsigned
+          path: |
+            app/build/outputs/apk/release/app-release-unsigned.apk
+            app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+      - name: Upload lint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Vitra-lint-report
+          path: app/build/reports/lint-results-debug.html
+          if-no-files-found: warn
