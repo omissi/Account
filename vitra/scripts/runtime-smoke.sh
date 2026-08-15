@@ -36,17 +36,23 @@ adb pull /sdcard/home.xml "$OUT_DIR/02-home.xml" >/dev/null
 grep -q "VITRA" "$OUT_DIR/02-home.xml"
 
 # Open Settings from the bottom navigation and verify the process again.
-adb shell input tap 945 2290
+adb shell input tap 135 2290
 sleep 2
 adb exec-out screencap -p > "$OUT_DIR/03-settings.png"
+adb shell uiautomator dump /sdcard/settings.xml >/dev/null
+adb pull /sdcard/settings.xml "$OUT_DIR/03-settings.xml" >/dev/null
+grep -q "الإعدادات" "$OUT_DIR/03-settings.xml"
 test -n "$(adb shell pidof tech.alomessi.vitra | tr -d '\r')"
 
 # Android Back reliably returns from every secondary tab to the catalog.
 adb shell input keyevent 4
 sleep 2
-adb shell input tap 280 1160
+adb shell input tap 800 1160
 sleep 2
 adb exec-out screencap -p > "$OUT_DIR/04-detail.png"
+adb shell uiautomator dump /sdcard/detail.xml >/dev/null
+adb pull /sdcard/detail.xml "$OUT_DIR/04-detail.xml" >/dev/null
+grep -q "تخصيص التصميم" "$OUT_DIR/04-detail.xml"
 test -n "$(adb shell pidof tech.alomessi.vitra | tr -d '\r')"
 
 # Verify all widget providers are registered. Android correctly blocks the shell
