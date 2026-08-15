@@ -13,7 +13,7 @@ Vitra is an original Android widget studio by **ALOMESSI TECH**. It combines a c
 - Wallpapers, favorites, privacy, permission, city/data-source and widget diagnostics screens.
 - Six real Android widget providers: Clock, Date, Weather, Prayer, Search and System.
 - Live, cached weather from Open-Meteo and prayer times from Aladhan for nine selectable cities.
-- Per-widget accent configuration through the Android widget configuration flow.
+- Per-widget accent, glass opacity and corner-radius configuration through the Android widget configuration flow; the chosen style is rendered into the real RemoteViews background.
 - No registration and no sensitive permission requested on first launch.
 
 ## Build

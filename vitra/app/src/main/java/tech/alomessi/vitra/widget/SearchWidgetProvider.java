@@ -20,6 +20,7 @@ public class SearchWidgetProvider extends BaseInfoWidgetProvider {
         views.setTextViewText(R.id.widget_eyebrow, eyebrow(context));
         views.setTextViewText(R.id.widget_primary, primary(context));
         views.setTextViewText(R.id.widget_secondary, secondary(context));
+        WidgetStyle.apply(context,views,id);
         Intent search = new Intent(Intent.ACTION_WEB_SEARCH);
         search.putExtra(android.app.SearchManager.QUERY, "");
         PendingIntent click = PendingIntent.getActivity(context, id, search,

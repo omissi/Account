@@ -25,8 +25,7 @@ public abstract class BaseInfoWidgetProvider extends AppWidgetProvider {
         views.setTextViewText(R.id.widget_eyebrow, eyebrow(context));
         views.setTextViewText(R.id.widget_primary, primary(context));
         views.setTextViewText(R.id.widget_secondary, secondary(context));
-        int accent=context.getSharedPreferences("vitra",Context.MODE_PRIVATE).getInt("widget_accent_"+id,0xff30e7ff);
-        views.setTextColor(R.id.widget_eyebrow,accent);
+        WidgetStyle.apply(context,views,id);
         Intent launch = new Intent(context, MainActivity.class);
         PendingIntent click = PendingIntent.getActivity(context, id, launch,
             PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);

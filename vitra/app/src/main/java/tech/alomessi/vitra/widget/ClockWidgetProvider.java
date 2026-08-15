@@ -15,6 +15,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager manager, int[] ids) {
         for (int id : ids) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_time);
+            WidgetStyle.apply(context,views,id);
             PendingIntent open = PendingIntent.getActivity(context, id, new Intent(context, MainActivity.class),
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             views.setOnClickPendingIntent(R.id.widget_primary, open);
