@@ -25,9 +25,9 @@
         android:id="@+id/widget_eyebrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="VITRA"
+        android:text="@string/widget_brand"
         android:textColor="#FF30E7FF"
-        android:textSize="10sp"
+        android:textSize="11sp"
         android:textStyle="bold" />
 
     <TextClock
