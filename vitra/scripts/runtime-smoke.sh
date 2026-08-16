@@ -70,18 +70,16 @@ adb logcat -c
 adb shell pm clear tech.alomessi.vitra >/dev/null
 adb shell am start -W -n tech.alomessi.vitra/.MainActivity
 sleep 3
-adb exec-out screencap -p > "$OUT_DIR/01-onboarding.png"
 adb logcat -d > "$OUT_DIR/01-launch-logcat.txt"
 test -n "$(adb shell pidof tech.alomessi.vitra | tr -d '\r')"
 wait_for_text "V I T R A" "$OUT_DIR/01-onboarding.xml"
+adb exec-out screencap -p > "$OUT_DIR/01-onboarding.png"
 
 # Choose Arabic by semantic text rather than fragile screen coordinates.
 tap_text "ابدأ بالعربية"
-sleep 3
+wait_for_text "30 تصميم ويدجت" "$OUT_DIR/02-home.xml"
 test -n "$(adb shell pidof tech.alomessi.vitra | tr -d '\r')"
 adb exec-out screencap -p > "$OUT_DIR/02-home.png"
-adb shell uiautomator dump /sdcard/home.xml >/dev/null
-adb pull /sdcard/home.xml "$OUT_DIR/02-home.xml" >/dev/null
 grep -q "V I T R A" "$OUT_DIR/02-home.xml"
 
 # Open the Glassify-style drawer, then Settings.
