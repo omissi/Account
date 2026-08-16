@@ -14,6 +14,29 @@ collect_failure_evidence() {
 }
 trap collect_failure_evidence EXIT
 
+tap_text() {
+  local wanted="$1"
+  adb shell uiautomator dump /sdcard/tap.xml >/dev/null
+  adb pull /sdcard/tap.xml "$OUT_DIR/tap.xml" >/dev/null
+  local coordinates
+  coordinates="$(python3 - "$OUT_DIR/tap.xml" "$wanted" <<'PY'
+import re
+import sys
+import xml.etree.ElementTree as ET
+
+path, wanted = sys.argv[1], sys.argv[2]
+for node in ET.parse(path).iter("node"):
+    if node.attrib.get("text") == wanted or node.attrib.get("content-desc") == wanted:
+        points = [int(v) for v in re.findall(r"\d+", node.attrib.get("bounds", ""))]
+        if len(points) == 4:
+            print((points[0] + points[2]) // 2, (points[1] + points[3]) // 2)
+            break
+PY
+)"
+  test -n "$coordinates"
+  adb shell input tap $coordinates
+}
+
 adb install -r "$APK"
 adb logcat -c
 adb shell pm clear tech.alomessi.vitra >/dev/null
@@ -26,8 +49,8 @@ adb shell uiautomator dump /sdcard/onboarding.xml >/dev/null
 adb pull /sdcard/onboarding.xml "$OUT_DIR/01-onboarding.xml" >/dev/null
 grep -q "VITRA" "$OUT_DIR/01-onboarding.xml"
 
-# Pixel 6 test profile: choose the Arabic first-launch button.
-adb shell input tap 540 1450
+# Choose Arabic by semantic text rather than fragile screen coordinates.
+tap_text "ابدأ بالعربية"
 sleep 3
 test -n "$(adb shell pidof tech.alomessi.vitra | tr -d '\r')"
 adb exec-out screencap -p > "$OUT_DIR/02-home.png"
@@ -35,8 +58,10 @@ adb shell uiautomator dump /sdcard/home.xml >/dev/null
 adb pull /sdcard/home.xml "$OUT_DIR/02-home.xml" >/dev/null
 grep -q "VITRA" "$OUT_DIR/02-home.xml"
 
-# Open Settings from the bottom navigation and verify the process again.
-adb shell input tap 135 2290
+# Open the Glassify-style drawer, then Settings.
+tap_text "•••"
+sleep 1
+tap_text "الإعدادات"
 sleep 2
 adb exec-out screencap -p > "$OUT_DIR/03-settings.png"
 adb shell uiautomator dump /sdcard/settings.xml >/dev/null
@@ -44,15 +69,24 @@ adb pull /sdcard/settings.xml "$OUT_DIR/03-settings.xml" >/dev/null
 grep -q "الإعدادات" "$OUT_DIR/03-settings.xml"
 test -n "$(adb shell pidof tech.alomessi.vitra | tr -d '\r')"
 
-# Android Back reliably returns from every secondary tab to the catalog.
+# Android Back returns from settings to the catalog.
 adb shell input keyevent 4
 sleep 2
-adb shell input tap 800 1160
+tap_text "الساعة الكلاسيكية"
 sleep 2
 adb exec-out screencap -p > "$OUT_DIR/04-detail.png"
 adb shell uiautomator dump /sdcard/detail.xml >/dev/null
 adb pull /sdcard/detail.xml "$OUT_DIR/04-detail.xml" >/dev/null
 grep -q "تخصيص التصميم" "$OUT_DIR/04-detail.xml"
+test -n "$(adb shell pidof tech.alomessi.vitra | tr -d '\r')"
+
+# Open the full customization studio and verify the missing screen now exists.
+tap_text "تخصيص التصميم"
+sleep 2
+adb exec-out screencap -p > "$OUT_DIR/05-editor.png"
+adb shell uiautomator dump /sdcard/editor.xml >/dev/null
+adb pull /sdcard/editor.xml "$OUT_DIR/05-editor.xml" >/dev/null
+grep -q "تخصيص الويدجت" "$OUT_DIR/05-editor.xml"
 test -n "$(adb shell pidof tech.alomessi.vitra | tr -d '\r')"
 
 # Verify all widget providers are registered. Android correctly blocks the shell
