@@ -28,7 +28,7 @@
         android:text="@string/widget_brand"
         android:textColor="#FF30E7FF"
         android:letterSpacing="0.16"
-        android:textSize="9sp"
+        android:textSize="11sp"
         android:textStyle="bold" />
 
     <TextClock

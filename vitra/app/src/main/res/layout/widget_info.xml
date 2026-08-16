@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:textColor="#FF30E7FF"
         android:letterSpacing="0.12"
-        android:textSize="9sp"
+        android:textSize="11sp"
         android:textStyle="bold" />
 
     <TextView
