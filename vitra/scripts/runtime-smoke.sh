@@ -26,7 +26,9 @@ import xml.etree.ElementTree as ET
 
 path, wanted = sys.argv[1], sys.argv[2]
 for node in ET.parse(path).iter("node"):
-    if node.attrib.get("text") == wanted or node.attrib.get("content-desc") == wanted:
+    visible = node.attrib.get("text", "")
+    described = node.attrib.get("content-desc", "")
+    if visible == wanted or described == wanted or wanted in visible or wanted in described:
         points = [int(v) for v in re.findall(r"\d+", node.attrib.get("bounds", ""))]
         if len(points) == 4:
             print((points[0] + points[2]) // 2, (points[1] + points[3]) // 2)
