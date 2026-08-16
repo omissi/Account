@@ -39,6 +39,32 @@ PY
   adb shell input tap $coordinates
 }
 
+wait_for_text() {
+  local wanted="$1"
+  local output="$2"
+  local attempt
+  for attempt in 1 2 3 4 5; do
+    adb shell uiautomator dump /sdcard/wait.xml >/dev/null || true
+    adb pull /sdcard/wait.xml "$output" >/dev/null || true
+
+    # The hosted emulator occasionally overlays a Pixel Launcher ANR even
+    # though Vitra launched successfully. Dismiss only that system dialog and
+    # bring Vitra back to the foreground before evaluating the application UI.
+    if grep -q 'Pixel Launcher isn.t responding' "$output" 2>/dev/null; then
+      tap_text "Wait"
+      adb shell am start -n tech.alomessi.vitra/.MainActivity >/dev/null
+      sleep 2
+      continue
+    fi
+
+    if grep -q "$wanted" "$output" 2>/dev/null; then
+      return 0
+    fi
+    sleep 2
+  done
+  return 1
+}
+
 adb install -r "$APK"
 adb logcat -c
 adb shell pm clear tech.alomessi.vitra >/dev/null
@@ -47,9 +73,7 @@ sleep 3
 adb exec-out screencap -p > "$OUT_DIR/01-onboarding.png"
 adb logcat -d > "$OUT_DIR/01-launch-logcat.txt"
 test -n "$(adb shell pidof tech.alomessi.vitra | tr -d '\r')"
-adb shell uiautomator dump /sdcard/onboarding.xml >/dev/null
-adb pull /sdcard/onboarding.xml "$OUT_DIR/01-onboarding.xml" >/dev/null
-grep -q "V I T R A" "$OUT_DIR/01-onboarding.xml"
+wait_for_text "V I T R A" "$OUT_DIR/01-onboarding.xml"
 
 # Choose Arabic by semantic text rather than fragile screen coordinates.
 tap_text "ابدأ بالعربية"
