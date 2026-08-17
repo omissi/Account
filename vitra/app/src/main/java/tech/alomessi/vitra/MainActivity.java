@@ -645,19 +645,20 @@ public class MainActivity extends Activity {
     }
 
     private void header(LinearLayout root, String title, boolean back, boolean menu) {
-        LinearLayout header = VitraUi.row(this); header.setGravity(Gravity.CENTER_VERTICAL); header.setMinimumHeight(d(58));
-        Button left = VitraUi.circleButton(this, back ? "‹" : "V"); left.setTextSize(back ? 34 : 20); left.setOnClickListener(v -> { if (back) goBack(); else switchTab("widgets"); });
-        header.addView(left, new LinearLayout.LayoutParams(d(48), d(48)));
-        TextView heading = VitraUi.text(this, title, 21, VitraUi.TEXT, true); heading.setGravity(Gravity.CENTER); if ("V I T R A".equals(title)) heading.setLetterSpacing(.14f); header.addView(heading, new LinearLayout.LayoutParams(0, d(52), 1));
-        Button right = VitraUi.circleButton(this, menu ? "⋯" : ""); right.setTextSize(menu ? 28 : 17); right.setEnabled(menu); if (menu) right.setOnClickListener(v -> showMenu()); header.addView(right, new LinearLayout.LayoutParams(d(48), d(48)));
+        FrameLayout header = new FrameLayout(this); header.setMinimumHeight(d(58));
+        Button left = VitraUi.circleButton(this, back ? "" : "V"); left.setTextSize(20); left.setEnabled(!back); if (!back) left.setOnClickListener(v -> switchTab("widgets"));
+        FrameLayout.LayoutParams leftP = new FrameLayout.LayoutParams(d(48), d(48), Gravity.LEFT | Gravity.CENTER_VERTICAL); header.addView(left, leftP);
+        TextView heading = VitraUi.text(this, title, 21, VitraUi.TEXT, true); heading.setGravity(Gravity.CENTER); if ("V I T R A".equals(title)) heading.setLetterSpacing(.14f); header.addView(heading, new FrameLayout.LayoutParams(-1, d(52), Gravity.CENTER));
+        Button right = VitraUi.circleButton(this, back ? "‹" : menu ? "⋯" : ""); right.setTextSize(back ? 34 : menu ? 28 : 17); right.setEnabled(back || menu); right.setOnClickListener(v -> { if (back) goBack(); else if (menu) showMenu(); });
+        FrameLayout.LayoutParams rightP = new FrameLayout.LayoutParams(d(48), d(48), Gravity.RIGHT | Gravity.CENTER_VERTICAL); header.addView(right, rightP);
         root.addView(header, fill(d(58), d(4)));
     }
 
     private View buildBottomNav() {
         LinearLayout nav = VitraUi.row(this); nav.setPadding(d(8), d(7), d(8), d(7)); nav.setGravity(Gravity.CENTER); nav.setBackground(VitraUi.glass(this, 31, .98f, 0xff4b4b52));
-        nav.addView(navItem("▦", t("Widgets", "ويدجت"), "widgets"), new LinearLayout.LayoutParams(0, -1, 1));
-        nav.addView(navItem("▦", t("Icons", "أيقونات"), "icons"), new LinearLayout.LayoutParams(0, -1, 1));
         nav.addView(navItem("▧", t("Wallpapers", "خلفيات"), "wallpapers"), new LinearLayout.LayoutParams(0, -1, 1));
+        nav.addView(navItem("▦", t("Icons", "أيقونات"), "icons"), new LinearLayout.LayoutParams(0, -1, 1));
+        nav.addView(navItem("▦", t("Widgets", "ويدجت"), "widgets"), new LinearLayout.LayoutParams(0, -1, 1));
         return nav;
     }
 
