@@ -1,0 +1,28 @@
+name: Temporary Glassify Transfer
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  transfer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download APK
+        run: |
+          curl -fL --retry 3 -o Glassify-debug.apk "https://tmpfiles.org/dl/wXwXColDAwAw/glassify-debug.apk"
+          test -s Glassify-debug.apk
+          ls -lh Glassify-debug.apk
+          sha256sum Glassify-debug.apk
+      - name: Commit APK temporarily
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Glassify-debug.apk
+          git commit -m "chore: temporary Glassify APK transfer" || true
+          git push origin main
