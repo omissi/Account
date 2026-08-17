@@ -79,8 +79,8 @@ public final class WidgetData {
 
             // Prayer.
             w("prayer-compact", "Prayer", "Compact Prayer", "صلاة مختصر", "Current prayer and countdown", "الصلاة الحالية والعد التنازلي", "Midnight", true, false, 34, 2),
-            w("prayer-row", "Prayer", "Prayer Row", "Five prayers in one row", "الصلوات الخمس في صف", "Midnight", false, false, 35, 2),
-            w("prayer-selected", "Prayer", "Selected Prayer", "Focused next prayer", "تركيز الصلاة القادمة", "Midnight", false, false, 36, 2),
+            w("prayer-row", "Prayer", "Prayer Row", "صف الصلوات", "Five prayers in one row", "الصلوات الخمس في صف", "Midnight", false, false, 35, 2),
+            w("prayer-selected", "Prayer", "Selected Prayer", "صلاة محددة", "Focused next prayer", "تركيز الصلاة القادمة", "Midnight", false, false, 36, 2),
             w("prayer-next", "Prayer", "Next Prayer", "الصلاة القادمة", "Five times with progress", "المواقيت مع تقدم الوقت", "Midnight", true, false, 37, 2),
             w("prayer-detail", "Prayer", "Prayer Detail", "صلاة تفصيل", "Detailed daily timings", "تفاصيل مواقيت اليوم", "Midnight", false, true, 38, 2),
             w("prayer-calligraphy", "Prayer", "Prayer Calligraphy", "مخطوطة الصلاة", "Arabic prayer moment", "لحظة الصلاة بخط عربي", "Midnight", true, true, 39, 1),
@@ -88,7 +88,7 @@ public final class WidgetData {
 
             // Quotes and daily content.
             w("quote-hadith", "Quotes", "Hadith Quote", "اقتباسات أحاديث", "Daily hadith card", "بطاقة حديث يومية", "Midnight", false, false, 41, 2),
-            w("quote-dhikr", "Quotes", "Dhikr Quote", "اقتباسات أذكار", "Morning and evening dhikr", "Midnight", false, false, 42, 2),
+            w("quote-dhikr", "Quotes", "Dhikr Quote", "اقتباس ذكر", "Morning and evening dhikr", "أذكار الصباح والمساء", "Midnight", false, false, 42, 2),
             w("quote-ayah", "Quotes", "Ayah Quote", "اقتباسات آيات", "Quranic verse card", "بطاقة آية قرآنية", "Midnight", true, true, 43, 2),
             w("quote-custom", "Quotes", "Custom Quote", "اقتباس خاص", "Write your own quotation", "اكتب اقتباسك الخاص", "Midnight", false, false, 44, 2),
             w("counter-dhikr", "Counters", "Dhikr Counter", "عداد الذكر", "Tap counter with haptics", "عداد لمس مع اهتزاز", "Midnight", true, false, 45, 1),
