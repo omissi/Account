@@ -75,15 +75,15 @@ test -n "$(adb shell pidof tech.alomessi.vitra | tr -d '\r')"
 wait_for_text "V I T R A" "$OUT_DIR/01-onboarding.xml"
 adb exec-out screencap -p > "$OUT_DIR/01-onboarding.png"
 
-# Choose Arabic by semantic text rather than fragile screen coordinates.
-tap_text "ابدأ بالعربية"
-wait_for_text "30 تصميم ويدجت" "$OUT_DIR/02-home.xml"
+# Start the Arabic-first product path.
+tap_text "ابدأ التصميم"
+wait_for_text "تصميماً جاهزاً" "$OUT_DIR/02-home.xml"
 test -n "$(adb shell pidof tech.alomessi.vitra | tr -d '\r')"
 adb exec-out screencap -p > "$OUT_DIR/02-home.png"
 grep -q "V I T R A" "$OUT_DIR/02-home.xml"
 
-# Open the Glassify-style drawer, then Settings.
-tap_text "•••"
+# Open the Vitra drawer, then Settings.
+tap_text "⋯"
 sleep 1
 tap_text "الإعدادات"
 sleep 2
@@ -96,22 +96,41 @@ test -n "$(adb shell pidof tech.alomessi.vitra | tr -d '\r')"
 # Android Back returns from settings to the catalog.
 adb shell input keyevent 4
 sleep 2
-tap_text "الساعة الكلاسيكية"
+tap_text "ساعة كلاسيكية"
 sleep 2
 adb exec-out screencap -p > "$OUT_DIR/04-detail.png"
 adb shell uiautomator dump /sdcard/detail.xml >/dev/null
 adb pull /sdcard/detail.xml "$OUT_DIR/04-detail.xml" >/dev/null
-grep -q "تخصيص التصميم" "$OUT_DIR/04-detail.xml"
+grep -q "تخصيص هذه الويدجت" "$OUT_DIR/04-detail.xml"
 test -n "$(adb shell pidof tech.alomessi.vitra | tr -d '\r')"
 
 # Open the full customization studio and verify the missing screen now exists.
-tap_text "تخصيص التصميم"
+tap_text "تخصيص هذه الويدجت"
 sleep 2
 adb exec-out screencap -p > "$OUT_DIR/05-editor.png"
 adb shell uiautomator dump /sdcard/editor.xml >/dev/null
 adb pull /sdcard/editor.xml "$OUT_DIR/05-editor.xml" >/dev/null
-grep -q "تخصيص الويدجت" "$OUT_DIR/05-editor.xml"
+grep -q "استوديو الويدجت" "$OUT_DIR/05-editor.xml"
 test -n "$(adb shell pidof tech.alomessi.vitra | tr -d '\r')"
+
+# Verify the two other root tabs and their working catalog headings.
+adb shell input keyevent 4
+sleep 1
+adb shell input keyevent 4
+sleep 1
+tap_text "أيقونات"
+sleep 2
+adb shell uiautomator dump /sdcard/icons.xml >/dev/null
+adb pull /sdcard/icons.xml "$OUT_DIR/06-icons.xml" >/dev/null
+grep -q "إضافة ويدجت الاختصارات" "$OUT_DIR/06-icons.xml"
+adb exec-out screencap -p > "$OUT_DIR/06-icons.png"
+
+tap_text "خلفيات"
+sleep 2
+adb shell uiautomator dump /sdcard/wallpapers.xml >/dev/null
+adb pull /sdcard/wallpapers.xml "$OUT_DIR/07-wallpapers.xml" >/dev/null
+grep -q "استيراد صورتك" "$OUT_DIR/07-wallpapers.xml"
+adb exec-out screencap -p > "$OUT_DIR/07-wallpapers.png"
 
 # Verify all widget providers are registered. Android correctly blocks the shell
 # from forging the protected APPWIDGET_UPDATE broadcast; real updates are sent
