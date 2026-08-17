@@ -25,13 +25,13 @@ jobs:
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: Vitra-1.1.0-debug-apk
+          name: Vitra-1.2.0-debug-apk
           path: vitra/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
       - name: Upload release artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Vitra-1.1.0-release-unsigned
+          name: Vitra-1.2.0-release-unsigned
           path: |
             vitra/app/build/outputs/apk/release/app-release-unsigned.apk
             vitra/app/build/outputs/bundle/release/app-release.aab
@@ -40,6 +40,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Vitra-1.1.0-lint-report
+          name: Vitra-1.2.0-lint-report
           path: vitra/app/build/reports/lint-results-debug.html
           if-no-files-found: warn
