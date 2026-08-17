@@ -718,7 +718,7 @@ public class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_WALLPAPER && resultCode == RESULT_OK && data != null && data.getData() != null) {
             importedWallpaper = data.getData();
-            try { getContentResolver().takePersistableUriPermission(importedWallpaper, data.getFlags() & Intent.FLAG_GRANT_READ_URI_PERMISSION); } catch (SecurityException ignored) { }
+            try { getContentResolver().takePersistableUriPermission(importedWallpaper, Intent.FLAG_GRANT_READ_URI_PERMISSION); } catch (SecurityException ignored) { }
             prefs.edit().putString("custom_wallpaper_uri", importedWallpaper.toString()).apply(); navigate("wallpaper_detail");
         }
     }
