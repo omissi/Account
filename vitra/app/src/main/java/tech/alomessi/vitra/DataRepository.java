@@ -17,7 +17,11 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import tech.alomessi.vitra.widget.ClockWidgetProvider;
+import tech.alomessi.vitra.widget.DateWidgetProvider;
 import tech.alomessi.vitra.widget.PrayerWidgetProvider;
+import tech.alomessi.vitra.widget.SearchWidgetProvider;
+import tech.alomessi.vitra.widget.SystemWidgetProvider;
 import tech.alomessi.vitra.widget.WeatherWidgetProvider;
 
 public final class DataRepository {
@@ -34,8 +38,11 @@ public final class DataRepository {
     private DataRepository(){}
 
     public static void refresh(Context context,boolean force){
-        long now=System.currentTimeMillis();if(!force&&now-lastRequest<10*60*1000L)return;lastRequest=now;
-        Context app=context.getApplicationContext();IO.execute(()->{try{fetchWeather(app);}catch(Exception ignored){}try{fetchPrayer(app);}catch(Exception ignored){}updateWidgets(app);});
+        Context app=context.getApplicationContext();SharedPreferences preferences=app.getSharedPreferences("vitra",Context.MODE_PRIVATE);
+        if(!force&&!preferences.getBoolean("live_updates",true))return;
+        long interval=preferences.getBoolean("battery_saver",false)?30*60*1000L:10*60*1000L;
+        long now=System.currentTimeMillis();if(!force&&now-lastRequest<interval)return;lastRequest=now;
+        IO.execute(()->{try{fetchWeather(app);}catch(Exception ignored){}try{fetchPrayer(app);}catch(Exception ignored){}updateWidgets(app);});
     }
 
     private static void fetchWeather(Context c)throws Exception{
@@ -45,12 +52,20 @@ public final class DataRepository {
     }
 
     private static void fetchPrayer(Context c)throws Exception{
-        SharedPreferences p=c.getSharedPreferences("vitra",Context.MODE_PRIVATE);double lat=Double.longBitsToDouble(p.getLong("city_lat",Double.doubleToLongBits(15.3694)));double lon=Double.longBitsToDouble(p.getLong("city_lon",Double.doubleToLongBits(44.1910)));
-        String u="https://api.aladhan.com/v1/timings?latitude="+lat+"&longitude="+lon+"&method=4";JSONObject t=new JSONObject(get(u)).getJSONObject("data").getJSONObject("timings");String[] names={"Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"};String now=new SimpleDateFormat("HH:mm",Locale.US).format(new Date());String next=names[0],time=t.getString(names[0]).substring(0,5);for(String name:names){String candidate=t.getString(name).substring(0,5);if(candidate.compareTo(now)>0){next=name;time=candidate;break;}}
+        SharedPreferences p=c.getSharedPreferences("vitra",Context.MODE_PRIVATE);double lat=Double.longBitsToDouble(p.getLong("city_lat",Double.doubleToLongBits(15.3694)));double lon=Double.longBitsToDouble(p.getLong("city_lon",Double.doubleToLongBits(44.1910)));int method=p.getInt("prayer_method",4);
+        String u="https://api.aladhan.com/v1/timings?latitude="+lat+"&longitude="+lon+"&method="+method;JSONObject t=new JSONObject(get(u)).getJSONObject("data").getJSONObject("timings");String[] names={"Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"};String now=new SimpleDateFormat("HH:mm",Locale.US).format(new Date());String next=names[0],time=t.getString(names[0]).substring(0,5);for(String name:names){String candidate=t.getString(name).substring(0,5);if(candidate.compareTo(now)>0){next=name;time=candidate;break;}}
         SharedPreferences.Editor e=p.edit().putString("prayer_next",next).putString("prayer_time",time).putLong("prayer_updated",System.currentTimeMillis());for(String name:names)e.putString("prayer_"+name.toLowerCase(Locale.ROOT),t.getString(name).substring(0,5));e.apply();
     }
 
     private static String get(String address)throws Exception{HttpURLConnection c=(HttpURLConnection)new URL(address).openConnection();c.setConnectTimeout(9000);c.setReadTimeout(9000);c.setRequestProperty("User-Agent","Vitra/1.0 Android");c.setRequestProperty("Accept","application/json");try(BufferedReader r=new BufferedReader(new InputStreamReader(c.getInputStream()))){StringBuilder b=new StringBuilder();String line;while((line=r.readLine())!=null)b.append(line);return b.toString();}finally{c.disconnect();}}
     private static String weatherText(int code){if(code==0)return"Clear · صافي";if(code<=3)return"Partly cloudy · غائم جزئيًا";if(code<=48)return"Fog · ضباب";if(code<=67)return"Rain · أمطار";if(code<=77)return"Snow · ثلوج";if(code<=82)return"Showers · زخات";return"Thunderstorm · عاصفة";}
-    private static void updateWidgets(Context c){AppWidgetManager m=AppWidgetManager.getInstance(c);int[] w=m.getAppWidgetIds(new ComponentName(c,WeatherWidgetProvider.class));if(w.length>0)new WeatherWidgetProvider().onUpdate(c,m,w);int[] p=m.getAppWidgetIds(new ComponentName(c,PrayerWidgetProvider.class));if(p.length>0)new PrayerWidgetProvider().onUpdate(c,m,p);}
+    private static void updateWidgets(Context c){
+        AppWidgetManager m=AppWidgetManager.getInstance(c);
+        int[] clock=m.getAppWidgetIds(new ComponentName(c,ClockWidgetProvider.class));if(clock.length>0)new ClockWidgetProvider().onUpdate(c,m,clock);
+        int[] date=m.getAppWidgetIds(new ComponentName(c,DateWidgetProvider.class));if(date.length>0)new DateWidgetProvider().onUpdate(c,m,date);
+        int[] w=m.getAppWidgetIds(new ComponentName(c,WeatherWidgetProvider.class));if(w.length>0)new WeatherWidgetProvider().onUpdate(c,m,w);
+        int[] p=m.getAppWidgetIds(new ComponentName(c,PrayerWidgetProvider.class));if(p.length>0)new PrayerWidgetProvider().onUpdate(c,m,p);
+        int[] search=m.getAppWidgetIds(new ComponentName(c,SearchWidgetProvider.class));if(search.length>0)new SearchWidgetProvider().onUpdate(c,m,search);
+        int[] system=m.getAppWidgetIds(new ComponentName(c,SystemWidgetProvider.class));if(system.length>0)new SystemWidgetProvider().onUpdate(c,m,system);
+    }
 }
