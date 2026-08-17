@@ -2,15 +2,16 @@
 
 Vitra is an original Android widget studio by **ALOMESSI TECH**. It combines a curated widget catalog, live customization, wallpaper-aware styling, favorites, privacy-first settings, and six focused widget families instead of flooding the Android picker with dozens of near-duplicate entries.
 
-## Version 1.1
+## Version 1.2
 
 - Arabic and English first-launch choice with RTL-ready copy.
 - Glassify-inspired pure-black catalog language, while keeping original Vitra code, branding and artwork.
 - Search, category filters, compatibility and size metadata.
-- 30 independently rendered catalog designs covering analog clocks, digital/world time, date, weather, prayer, search, system, apps, people, sports, counters and quotes.
-- Detail screen with device preview, permissions, compatibility, favorite and direct pin actions.
-- Full customization studio: clear/fill/gradient/image backgrounds, normal/blur/fractal effects, accent palettes, opacity, darkness, blur, radius and save/add flow.
-- Drawer navigation plus search, wallpapers, favorites, tutorials, appearance, date/time, weather, prayer, synchronization, privacy and about screens.
+- 56 independently rendered catalog designs covering analog clocks, digital/world time, date, weather, prayer, quotes, search, system, apps, people, sports and counters.
+- Detail screen with live device preview, favorites, a working launcher pin request and launcher-compatible per-instance configuration.
+- Full customization studio: clear/fill/gradient/image backgrounds, accent palettes, opacity, darkness, blur, radius, date visibility and save/add flow.
+- Working root tabs for widgets, icon treatments and original wallpapers; wallpapers can be applied to Android home or lock screen or imported from a user-selected photo.
+- Drawer navigation plus search, favorites, tutorials, appearance, date/time, weather, prayer, synchronization, permission controls, privacy and about screens.
 - Six real Android widget providers: Clock, Date, Weather, Prayer, Search and System.
 - Live, cached weather from Open-Meteo and prayer times from Aladhan for nine selectable cities.
 - Per-widget accent, glass opacity and corner-radius configuration through the Android widget configuration flow; the chosen style is rendered into the real RemoteViews background.
@@ -28,7 +29,7 @@ The debug APK is generated at `app/build/outputs/apk/debug/app-debug.apk`. The r
 
 ## Package
 
-`tech.alomessi.vitra` · version `1.1.0` (11) · minimum Android 8.0 (API 26) · target Android 16 (API 36)
+`tech.alomessi.vitra` · version `1.2.0` (12) · minimum Android 8.0 (API 26) · target Android 16 (API 36)
 
 ## Product principles
 
@@ -40,6 +41,6 @@ The debug APK is generated at `app/build/outputs/apk/debug/app-debug.apk`. The r
 
 ## Data sources
 
-Weather is powered by Open-Meteo and prayer times by Aladhan. Vitra sends the coordinates of the city selected from its built-in list; it does not request precise device location. See `docs/DATA_SOURCES.md` and `docs/PRIVACY_AR.md` before publishing. The free Open-Meteo API is intended for non-commercial use; a monetized release must use an appropriate paid/commercial plan or replace the provider.
+Weather is powered by Open-Meteo and prayer times by Aladhan. Vitra sends coordinates for the chosen city, or for the user’s explicitly approved Android location. See `docs/DATA_SOURCES.md` and `docs/PRIVACY_AR.md` before publishing. The free Open-Meteo API is intended for non-commercial use; a monetized release must use an appropriate paid/commercial plan or replace the provider.
 
 Copyright © ALOMESSI TECH. All rights reserved.
