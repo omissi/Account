@@ -1,0 +1,53 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/widget_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/widget_glass" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="18dp"
+        android:paddingTop="14dp"
+        android:paddingRight="18dp"
+        android:paddingBottom="14dp">
+
+    <TextView
+        android:id="@+id/widget_eyebrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/widget_brand"
+        android:textColor="#FF30E7FF"
+        android:letterSpacing="0.16"
+        android:textSize="11sp"
+        android:textStyle="bold" />
+
+    <TextClock
+        android:id="@+id/widget_primary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:format12Hour="hh:mm"
+        android:format24Hour="HH:mm"
+        android:textColor="#FFFFFFFF"
+        android:textSize="44sp"
+        android:textStyle="bold" />
+
+    <TextClock
+        android:id="@+id/widget_secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:format12Hour="EEE, MMM d"
+        android:format24Hour="EEE, MMM d"
+        android:textColor="#CCB7C6DE"
+        android:textSize="13sp" />
+    </LinearLayout>
+</FrameLayout>

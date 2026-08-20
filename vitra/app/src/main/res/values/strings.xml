@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Vitra</string>
+    <string name="widget_brand">VITRA</string>
+    <string name="widget_clock_description">A live glass clock with date</string>
+    <string name="widget_date_description">A clean glass calendar card</string>
+    <string name="widget_weather_description">Weather-ready glass information card</string>
+    <string name="widget_prayer_description">Prayer schedule glass card</string>
+    <string name="widget_search_description">Quick search actions</string>
+    <string name="widget_system_description">Battery and device status</string>
+</resources>

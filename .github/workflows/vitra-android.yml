@@ -1,0 +1,45 @@
+name: Vitra Android release build
+
+on:
+  push:
+    branches: [main, 'agent/**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+      - name: Lint and build Vitra
+        working-directory: vitra
+        run: gradle :app:lintDebug :app:assembleDebug :app:assembleRelease :app:bundleRelease --stacktrace
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Vitra-1.2.0-debug-apk
+          path: vitra/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Vitra-1.2.0-release-unsigned
+          path: |
+            vitra/app/build/outputs/apk/release/app-release-unsigned.apk
+            vitra/app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+      - name: Upload lint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Vitra-1.2.0-lint-report
+          path: vitra/app/build/reports/lint-results-debug.html
+          if-no-files-found: warn
